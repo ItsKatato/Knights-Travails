@@ -2,6 +2,7 @@
 
 class Board
 
+
   def initialize
   end
 
@@ -13,6 +14,16 @@ class Board
     else
       false
     end
+  end
+
+  def self.create_board
+    arr = []
+    (1..8).each do |i|
+      (1..8).each do |j|
+        arr << [i, j]
+      end
+    end
+    arr
   end
 
   # method that creates node for each space
@@ -37,8 +48,11 @@ end
 
 # Class Knight
 class Knight
+  attr_accessor :root, :all_spaces
 
   def initialize
+    @root = nil
+    @all_spaces = nil
   end
 
   def any_direction_match?(root)
@@ -55,56 +69,39 @@ class Knight
     end
   end
 
-  def possible_moves(start_space, visited = [])
-    return nil if Board.invalid?(start_space) || start_space.nil? || visited.length == 64
+  def find_match(searched_array, array)
+    searched_array.detect { |element| element.data == array}
+  end
 
-    if visited.none? { |element| element[0] == start_space }
-      root = Node.new(start_space)
-      visited << [start_space, root]
-    else
-      matching_roots_arr = visited.detect { |arr| arr[0] == start_space }
-      root = matching_roots_arr[1]
+  def possible_moves(start_space)
+
+    board_spaces = Board.create_board
+
+    board_space_objs = []
+    
+    board_spaces.each { |space| board_space_objs << Node.new(space)}
+
+    board_space_objs.each do |space_obj|
+      space_obj.left_u = find_match(board_space_objs, [(space_obj.data[0] - 2), (space_obj.data[1] + 1)])
+      space_obj.left_d = find_match(board_space_objs, [(space_obj.data[0] - 2), (space_obj.data[1] - 1)])
+
+      space_obj.right_u = find_match(board_space_objs, [(space_obj.data[0] + 2), (space_obj.data[1] + 1)])
+      space_obj.right_d = find_match(board_space_objs, [(space_obj.data[0] + 2), (space_obj.data[1] - 1)])
+
+      space_obj.up_l = find_match(board_space_objs, [(space_obj.data[0] - 1), (space_obj.data[1] + 2)])
+      space_obj.up_r = find_match(board_space_objs, [(space_obj.data[0] + 1), (space_obj.data[1] + 2)])
+
+      space_obj.down_l = find_match(board_space_objs, [(space_obj.data[0] - 1), (space_obj.data[1] - 2)])
+      space_obj.down_r = find_match(board_space_objs, [(space_obj.data[0] + 1), (space_obj.data[1] - 2)])
     end
-    return root if any_direction_match?(root)
-
-    # left
-    left_up = possible_moves([(start_space[0] - 2), (start_space[1] + 1)], visited) # up
-    left_down = possible_moves([(start_space[0] - 2), (start_space[1] - 1)], visited) # down
-
-    root.left_u = left_up unless left_up.nil?
-
-    root.left_d = left_down unless left_down.nil?
-
-
-
-    # right
-    right_up = possible_moves([(start_space[0] + 2), (start_space[1] + 1)], visited) # up
-    right_down = possible_moves([(start_space[0] + 2), (start_space[1] - 1)], visited) # down
-
-    root.right_u = right_up unless right_up.nil?
-    root.right_d = right_down unless right_down.nil?
-
-    # up
-    up_left = possible_moves([(start_space[0] - 1), (start_space[1] + 2)], visited) # left
-    up_right = possible_moves([(start_space[0] + 1), (start_space[1] + 2)], visited) # right
-
-    root.up_l = up_left unless up_left.nil?
-
-    root.up_r = up_right unless up_right.nil?
-
-    # down
-    down_left = possible_moves([(start_space[0] - 1), (start_space[1] - 2)], visited) # left
-    down_right = possible_moves([(start_space[0] + 1), (start_space[1] - 2)], visited) # right
-
-    root.down_l = down_left unless down_left.nil?
-
-    root.down_r = down_right unless down_right.nil?
-
-    root
+    @all_spaces = board_space_objs
+    @root = find_match(board_space_objs, start_space)
   end
 end
 
 knight = Knight.new
 
-p knight.possible_moves([4, 4])
+knight.possible_moves([4,4])
+
+p knight.root
 

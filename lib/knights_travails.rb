@@ -22,8 +22,6 @@ class Board
     end
     arr
   end
-
-  # method that creates node for each space
 end
 
 class Node
@@ -38,7 +36,6 @@ class Node
   end
 end
 
-# Class Knight
 class Knight
   attr_accessor :all_spaces, :root
 
@@ -82,10 +79,10 @@ class Knight
     start_match.visited = true
     queue << start_match
 
-    while !queue.empty?
+    until queue.empty?
       current_node = queue.shift
       current_node.next_spaces.each do |node|
-        if !node.visited
+        unless node.visited
           node.visited = true
           queue.push(node)
           node.previous = current_node
@@ -102,7 +99,7 @@ class Knight
   def print_path(end_space)
     node = find_match(all_spaces, end_space)
     route = []
-    while !node.nil?
+    until node.nil?
       route << node.data
       node = node.previous
     end
@@ -112,9 +109,7 @@ class Knight
   end
 end
 
-
 knight = Knight.new
 
 knight.root = knight.find_match(knight.all_spaces, [4, 4])
-knight.knight_moves([3, 3], [4,3])
-
+knight.knight_moves([3, 3], [4, 3])

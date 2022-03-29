@@ -1,8 +1,6 @@
 # Frozen_String_Literal: false
 
 class Board
-  def initialize; end
-
   def self.create_board
     arr = []
     (1..8).each do |i|

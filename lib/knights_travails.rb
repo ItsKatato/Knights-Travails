@@ -1,16 +1,8 @@
 # Frozen_String_Literal: false
 
-# This program shows the shortest path for the knight in chess to get from one square of the board to another.
-
-# Class Board
-# Boundaries for left/right >= 1 <= 8
-# Boundaries for top/bottom >=1 <= 8
-
 class Board
-  attr_accessor :board
 
   def initialize
-    @board = Array.new(8) { Array.new(8) }
   end
 
   def self.invalid?(array)
@@ -22,41 +14,66 @@ class Board
       false
     end
   end
+
+  # method that creates node for each space
 end
 
 class Node
   include Comparable
-  attr_accessor :data, :connected_spaces, :visited
+  attr_accessor :data, :left_u, :left_d, :right_u, :right_d, :up_l, :up_r, :down_l, :down_r
 
   def initialize(data)
     @data = data
-    @connected_spaces = []
-    @visited = false
+    @left_u = nil
+    @left_d = nil 
+    @right_u = nil
+    @right_d = nil
+    @up_l = nil
+    @up_r = nil
+    @down_l = nil
+    @down_r = nil
   end
 end
 
 # Class Knight
 class Knight
-  attr_accessor :root, :starting_space
 
   def initialize
-    # @starting_space = start
-    # @root = possible_moves(starting_space)
+  end
+
+  def any_direction_match?(root)
+    if root.left_u || root.left_d
+      return true
+    elsif root.right_u || root.right_d
+      return true
+    elsif root.down_l || root.down_r
+      return true
+    elsif root.up_l || root.up_r
+      return true
+    else
+      return false
+    end
   end
 
   def possible_moves(start_space, visited = [])
-    return if start_space.empty? || Board.invalid?(start_space) || start_space.nil? || visited.include?(start_space)
+    return nil if Board.invalid?(start_space) || start_space.nil? || visited.length == 64
 
-    root = Node.new(start_space)
+    if visited.none? { |element| element[0] == start_space }
+      root = Node.new(start_space)
+      visited << [start_space, root]
+    else
+      matching_roots_arr = visited.detect { |arr| arr[0] == start_space }
+      root = matching_roots_arr[1]
+    end
+    return root if any_direction_match?(root)
 
-    visited << start_space
     # left
     left_up = possible_moves([(start_space[0] - 2), (start_space[1] + 1)], visited) # up
     left_down = possible_moves([(start_space[0] - 2), (start_space[1] - 1)], visited) # down
 
-    root.connected_spaces << left_up unless left_up.nil?
+    root.left_u = left_up unless left_up.nil?
 
-    root.connected_spaces << left_down unless left_down.nil?
+    root.left_d = left_down unless left_down.nil?
 
 
 
@@ -64,36 +81,30 @@ class Knight
     right_up = possible_moves([(start_space[0] + 2), (start_space[1] + 1)], visited) # up
     right_down = possible_moves([(start_space[0] + 2), (start_space[1] - 1)], visited) # down
 
-    root.connected_spaces << right_up unless right_up.nil?
-    root.connected_spaces << right_down unless right_down.nil?
+    root.right_u = right_up unless right_up.nil?
+    root.right_d = right_down unless right_down.nil?
 
     # up
     up_left = possible_moves([(start_space[0] - 1), (start_space[1] + 2)], visited) # left
     up_right = possible_moves([(start_space[0] + 1), (start_space[1] + 2)], visited) # right
 
-    root.connected_spaces << up_left unless up_left.nil?
+    root.up_l = up_left unless up_left.nil?
 
-    root.connected_spaces << up_right unless up_right.nil?
+    root.up_r = up_right unless up_right.nil?
 
     # down
     down_left = possible_moves([(start_space[0] - 1), (start_space[1] - 2)], visited) # left
     down_right = possible_moves([(start_space[0] + 1), (start_space[1] - 2)], visited) # right
 
-    root.connected_spaces << down_left unless down_left.nil?
+    root.down_l = down_left unless down_left.nil?
 
-    root.connected_spaces << down_right unless down_right.nil?
+    root.down_r = down_right unless down_right.nil?
 
     root
-  end
-
-  def knight_moves(starting_space, end_space, starting_node = possible_moves(starting_space), result = [], visited = [])
-    return result if starting_space == end_space
-
-    startin
-
   end
 end
 
 knight = Knight.new
 
-p knight.possible_moves
+p knight.possible_moves([4, 4])
+

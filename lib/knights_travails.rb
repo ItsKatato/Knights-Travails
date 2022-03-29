@@ -3,16 +3,6 @@
 class Board
   def initialize; end
 
-  def self.invalid?(array)
-    if array[0] < 1 || array[0] > 8
-      true
-    elsif array[1] < 1 || array[1] > 8
-      true
-    else
-      false
-    end
-  end
-
   def self.create_board
     arr = []
     (1..8).each do |i|
@@ -111,5 +101,4 @@ end
 
 knight = Knight.new
 
-knight.root = knight.find_match(knight.all_spaces, [4, 4])
 knight.knight_moves([3, 3], [4, 3])

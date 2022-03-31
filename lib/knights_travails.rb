@@ -25,11 +25,10 @@ class Node
 end
 
 class Knight
-  attr_accessor :all_spaces, :root
+  attr_accessor :all_spaces
 
   def initialize
     @all_spaces = possible_moves
-    @root = nil
   end
 
   def find_match(searched_array, array)
@@ -93,7 +92,7 @@ class Knight
     end
     route.reverse!
     puts "You made it in #{route.length - 1} moves! Here's your path:"
-    p route
+    route.each { |space| p space }
   end
 end
 

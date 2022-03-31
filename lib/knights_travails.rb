@@ -13,7 +13,6 @@ class Board
 end
 
 class Node
-  include Comparable
   attr_accessor :data, :previous, :next_spaces, :visited
 
   def initialize(data)
